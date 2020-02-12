@@ -1,17 +1,15 @@
-float STEP = 30;
-char BEGIN_KANJI = '\u3040';
-char END_KANJI = '\u309f';
-int RANGE_KANJI = END_KANJI - BEGIN_KANJI;
 //https://stackoverflow.com/a/30200250/8645145
+//https://www.fontspace.com/daredemotypo/nikkyou-sans
+float STEP = 30;
+char BEGIN_KANJI = '\u3041';
+char END_KANJI = '\u3096';
+int RANGE_KANJI = END_KANJI - BEGIN_KANJI;
 
 int w, h;
 char[][] front;
+char[] charset;
 
-char randomKanji() {
-  return char(int(random(RANGE_KANJI)) + BEGIN_KANJI);
-}
-
-char[] kanjiCharset() {
+char[] buildCharset() {
   char[] charset = new char[RANGE_KANJI+1];
   int i = 0;
   for (char c = BEGIN_KANJI; c <= END_KANJI; ++c, ++i) {
@@ -20,10 +18,18 @@ char[] kanjiCharset() {
   return charset;
 }
 
+char randomKanji() {
+  //return char(int(random(BEGIN_KANJI, END_KANJI)));
+  return charset[int(random(0, charset.length-1))];
+}
+
 void randomize() {
+  //int i = 0;
   for (int y = 0; y < h; ++y) {
     for (int x = 0; x < w; ++x) {
       front[y][x] = randomKanji();
+      //front[y][x] = charset[i % charset.length];
+      //++i;
     }
   }
 }
@@ -33,13 +39,13 @@ void setup() {
   frameRate(60);
   smooth();
   
-  w = int(width / STEP) + 1;
-  h = int(height / STEP) + 1;
+  w = int(width / STEP);
+  h = int(height / STEP);
   front = new char[h][w];
+  charset = buildCharset();
   randomize();
   
-  //print(PFont.list());
-  PFont font = createFont("Open Sans", 16, true, kanjiCharset());
+  PFont font = createFont("NikkyouSans-B6aV.ttf", 16, true, charset);
   textFont(font);
   textSize(STEP * 0.75);
   textAlign(CENTER, CENTER);
