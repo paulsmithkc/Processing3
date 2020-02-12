@@ -8,3 +8,10 @@ application.windows32
 application.windows64
 application.macosx
 out
+frames
+exports
+.exports
+*.exe
+*.zip
+*.jar
+*.mov
