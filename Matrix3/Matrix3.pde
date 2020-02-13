@@ -40,8 +40,8 @@ void refresh() {
 }
 
 void setup() {
-  //size(420,620);
-  fullScreen();
+  size(420,620);
+  //fullScreen();
   frameRate(60);
   smooth();
   
