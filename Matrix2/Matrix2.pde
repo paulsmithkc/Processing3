@@ -1,13 +1,16 @@
 //https://stackoverflow.com/a/30200250/8645145
 //https://www.fontspace.com/daredemotypo/nikkyou-sans
-float STEP = 30;
+float STEP = 60;
 char BEGIN_KANJI = '\u3041';
 char END_KANJI = '\u3096';
 int RANGE_KANJI = END_KANJI - BEGIN_KANJI;
+color LIGHT_COLOR = #00ffff;
+color DARK_COLOR = #003333;
 
 int w, h;
-char[][] buffer;
 char[] charset;
+char[][] chars;
+color[][] colors;
 
 char[] buildCharset() {
   char[] charset = new char[RANGE_KANJI+1];
@@ -26,20 +29,22 @@ char randomKanji() {
 void randomize() {
   for (int y = 0; y < h; ++y) {
     for (int x = 0; x < w; ++x) {
-      buffer[y][x] = randomKanji();
+      chars[y][x] = randomKanji();
+      colors[y][x] = LIGHT_COLOR;
     }
   }
 }
 
 void setup() {
-  size(400,400);
+  size(420,620);
   frameRate(60);
   smooth();
   
   w = int(width / STEP);
   h = int(height / STEP);
-  buffer = new char[h][w];
   charset = buildCharset();
+  chars = new char[h][w];
+  colors = new color[h][w];
   randomize();
   
   PFont font = createFont("NikkyouSans-B6aV.ttf", 16, true, charset);
@@ -59,14 +64,15 @@ void draw() {
   for (int y = 0; y < h; ++y) {
     for (int x = 0; x < w; ++x) {
       if (random(1) <= 0.1) {
-        buffer[y][x] = randomKanji();
+        chars[y][x] = randomKanji();
+        colors[y][x] = LIGHT_COLOR;
+      } else {
+        colors[y][x] = lerpColor(colors[y][x], DARK_COLOR, 0.1);
       }
-      float xp = (x + 0.5) * STEP + noise(x + time, y);
-      float yp = (y + 0.5) * STEP + noise(x + time, y);
-      fill(#003333);
-      text(buffer[y][x], xp-3, yp-3);
-      fill(#00ffff);
-      text(buffer[y][x], xp, yp);
+      float xp = (x + 0.5) * STEP + exp(noise(x + time, y) * 3);
+      float yp = (y + 0.5) * STEP + exp(noise(x + time, y) * 3);
+      fill(colors[y][x]);
+      text(chars[y][x], xp, yp);
     }
   }
 }
